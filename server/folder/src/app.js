@@ -13,4 +13,8 @@ const apiLimiter = rateLimit({
 })
 
 app.use(apiLimiter)
+
+app.use("/api/v1/folder" , require("./modules/folder.route"))
+
+
 module.exports = app
