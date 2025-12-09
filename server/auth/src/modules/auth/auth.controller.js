@@ -1,6 +1,8 @@
 const User = require("./auth.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const { publishUserCreate } = require("../../events/auth.publisher")
+
 
 exports.register = async (req, res) => {
     try {
@@ -33,6 +35,8 @@ exports.register = async (req, res) => {
             secure: true,
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
+
+        await publishUserCreate(user)
 
         res.status(201).json({
             msg: "Register success",
