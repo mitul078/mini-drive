@@ -8,23 +8,50 @@ exports.uploadFile = async (req, res) => {
     try {
         const { folderId } = req.body
         const userId = req.user.id
+        const file = req.file
+
 
         let folder = await redisClient.get(`verifiedFolders:${folderId}`)
-        console.log("Raw Redis:", folder)
 
         if (!folder) {
             return res.status(400).json({ msg: "invalid folderId" })
         }
 
-        folder = JSON.parse(folder)   // ✅ FIX
-
-        console.log("Parsed:", folder)
+        folder = JSON.parse(folder)
 
         if (folder.folderId !== folderId || folder.userId !== userId) {
             return res.status(400).json({ msg: "invalid folderId" })
         }
 
-        res.status(200).json({ msg: "correct" })
+
+        if (!file)
+            return res.status(400).json({ msg: "File required" })
+
+        const allowedType = ["image/jpeg", "image/png", "image/jpg", "application/pdf"]
+
+        if (!allowedType.includes(file.mimetype)) {
+            return res.status(400).json({ msg: "Only images and pdf are allowed" })
+        }
+
+        const upload = await imagekit.upload({
+            file: file.buffer,
+            fileName: `${userId}-${file.originalname}`,
+            folder: "mini-drive"
+        })
+
+        const saveFile = await File.create({
+            fileName: upload.name,
+            size: upload.size,
+            folderId,
+            mimeType: file.mimetype,
+            storagePath: upload.url
+        })
+
+        res.status(200).json({
+            msg: "file uploaded",
+            saveFile
+
+        })
 
     } catch (error) {
         console.log(error)
