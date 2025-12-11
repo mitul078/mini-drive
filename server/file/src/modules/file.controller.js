@@ -40,11 +40,13 @@ exports.uploadFile = async (req, res) => {
         })
 
         const saveFile = await File.create({
-            fileName: upload.name,
+            fileName: file.originalname,
+            userId,
             size: upload.size,
             folderId,
             mimeType: file.mimetype,
-            storagePath: upload.url
+            url: upload.url,
+            folderPath: `${folder.path}/${file.originalname}`
         })
 
         res.status(200).json({
