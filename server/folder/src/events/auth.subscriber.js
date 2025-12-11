@@ -1,10 +1,10 @@
-const redis = require("../config/redis")
+const {redisSubscriber} = require("../config/redis")
 const Folder = require("../modules/folder.model")
 
 
 async function startAuthSubscriber() {
     
-    redis.subscribe("auth:user-created" , (err) => {
+    redisSubscriber.subscribe("auth:user-created" , (err) => {
         if(err){
             console.log("Auth sub error: ", err)
             return
@@ -12,7 +12,7 @@ async function startAuthSubscriber() {
         console.log("Auth subscribe the auth:user-created")
     })
 
-    redis.on("message", async (channel, message) => {
+    redisSubscriber.on("message", async (channel, message) => {
         if (channel == "auth:user-created") {
             
             const {userId} = JSON.parse(message)

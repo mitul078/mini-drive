@@ -1,16 +1,21 @@
 const Redis = require("ioredis")
 
-const redis = new Redis({
+const redisSubscriber = new Redis({
+    host: "127.0.0.1",
+    port: 6379
+})
+const redisPublisher = new Redis({
     host: "127.0.0.1",
     port: 6379
 })
 
-redis.on("connect", () => {
+redisSubscriber.on("connect", () => {
     console.log("✅ Redis connected")
 })
 
-redis.on("error", (err) => {
-    console.error("❌ Redis error", err)
+redisPublisher.on("connect", () => {
+    console.log("✅ Redis connected")
 })
 
-module.exports = redis
+
+module.exports = {redisPublisher , redisSubscriber}
