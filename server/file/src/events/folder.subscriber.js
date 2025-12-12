@@ -13,12 +13,18 @@ module.exports = function StartFolderSubscribers() {
     redisSubscriber.on("message", async (channel, message) => {
         if (channel === "folder:verified") {
             const data = await JSON.parse(message)
+            const newFolderId = data.folderId
+
+            const prevFolderId  = await redisClient.get("verifiedFolders:current")
+
+            if(prevFolderId)
+                await redisClient.del(`verifiedFolders:${prevFolderId}`)
 
             await redisClient.set(
-                `verifiedFolders:${data.folderId}`, JSON.stringify(data)
+                `verifiedFolders:${newFolderId}`, JSON.stringify(data) , "EX", 3600
             )
 
-            console.log("Cached verified folder:", data);
+            await redisClient.set("verifiedFolders:current" , newFolderId)
         }
     })
 

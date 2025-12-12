@@ -1,6 +1,7 @@
 const File = require("./file.model")
 const imagekit = require("../config/imagekit")
 const { redisClient } = require("../config/redis")
+const crypto = require("crypto")
 require("../events/folder.subscriber")()
 
 
@@ -40,6 +41,7 @@ exports.uploadFile = async (req, res) => {
         })
 
         const saveFile = await File.create({
+            fileId: upload.fileId,
             fileName: file.originalname,
             userId,
             size: upload.size,
@@ -60,3 +62,46 @@ exports.uploadFile = async (req, res) => {
         res.status(500).json({ error: error.message })
     }
 }
+
+exports.getFiles = async (req, res) => {
+    try {
+
+        const { id } = req.params //folder-id
+        const userId = req.user.id
+
+        const files = await File.find({ folderId: id, userId })
+        if (files.length === 0)
+            return res.status(400).json({ msg: "no files" })
+
+        res.status(200).json({
+            msg: "Files fetched",
+            files
+        })
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+exports.deleteFile = async (req, res) => {
+    try {
+
+        const { id } = req.params
+        const userId = req.user.id
+
+        const file = await File.findOne({ _id: id, userId })
+        if (!file)
+            return res.status(404).json({ msg: "File not found" })
+
+        await imagekit.deleteFile(file.fileId)
+
+        await File.findByIdAndDelete(id)
+        res.status(200).json({ msg: "File deleted" })
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+
+

@@ -1,28 +1,31 @@
 const Redis = require("ioredis")
 
 const redisPublisher = new Redis({
-    host: "127.0.0.1",
-    port: 6379
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASS
 })
 const redisSubscriber = new Redis({
-    host: "127.0.0.1",
-    port: 6379
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASS
 })
 const redisClient = new Redis({
-    host: "127.0.0.1",
-    port: 6379
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASS
 })
 
 
 
-redisPublisher.on("connect" , () => {
+redisPublisher.on("connect", () => {
     console.log("Redis start(file)")
 })
-redisClient.on("connect" , () => {
+redisClient.on("connect", () => {
     console.log("Redis start(file)")
 })
-redisSubscriber.on("on" , () => {
-    console.log("Redis start" )
+redisSubscriber.on("on", () => {
+    console.log("Redis start")
 })
 
-module.exports = {redisPublisher , redisSubscriber , redisClient}
+module.exports = { redisPublisher, redisSubscriber, redisClient }

@@ -1,12 +1,14 @@
 const Redis = require("ioredis")
 
-const redisSubscriber = new Redis({
-    host: "127.0.0.1",
-    port: 6379
-})
 const redisPublisher = new Redis({
-    host: "127.0.0.1",
-    port: 6379
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASS
+})
+const redisSubscriber = new Redis({
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASS
 })
 
 redisSubscriber.on("connect", () => {
@@ -18,4 +20,4 @@ redisPublisher.on("connect", () => {
 })
 
 
-module.exports = {redisPublisher , redisSubscriber}
+module.exports = { redisPublisher, redisSubscriber }
