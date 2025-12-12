@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  auth:
+    build: ./auth
+    container_name: auth-service
+    ports:
+      - "4001:4001"
+    env_file:
+      - ./auth/.env
+  
+  folder:
+    build: ./folder
+    container_name: folder-service
+    ports:
+      - "4002:4002"
+    env_file:
+      - ./folder/.env
+  
+  file:
+    build: ./file
+    container_name: file-service
+    ports:
+      - "4003:4003"
+    env_file:
+      - ./file/.env
