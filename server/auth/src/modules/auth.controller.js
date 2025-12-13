@@ -1,8 +1,7 @@
 const User = require("./auth.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const { publishUserCreate } = require("../../events/auth.publisher")
-
+const { publishToQueue } = require("../broker/broker")
 
 exports.register = async (req, res) => {
     try {
@@ -36,7 +35,10 @@ exports.register = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
-        await publishUserCreate(user)
+
+        await publishToQueue("USER_CREATED:FOLDER_SERVICE", {
+            userId: user._id,
+        })
 
         res.status(201).json({
             msg: "Register success",

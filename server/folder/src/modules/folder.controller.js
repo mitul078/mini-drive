@@ -1,5 +1,6 @@
-const { publishFolderId } = require("../events/folder.publisher")
 const Folder = require("./folder.model")
+const { publishToQueue } = require("../broker/broker")
+
 
 exports.createFolder = async (req, res) => {
     try {
@@ -52,9 +53,12 @@ exports.checkFolderId = async (req, res) => {
         if (!folder)
             return res.status(400).json({ msg: "Folder not found" })
 
-        await publishFolderId(folder)
-        res.status(200).json({ msg: "Folder found", folder })
+        await publishToQueue("FOLDER_VERIFIED:FILE_SERVICE", {
+            folderId: folder._id,
+            userId: folder.userId
+        })
 
+        res.status(200).json({ msg: "Folder found", folder })
 
     } catch (error) {
         res.status(500).json({ error: error.message })

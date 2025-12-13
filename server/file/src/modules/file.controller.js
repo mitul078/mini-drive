@@ -1,8 +1,7 @@
 const File = require("./file.model")
 const imagekit = require("../config/imagekit")
-const { redisClient } = require("../config/redis")
-const crypto = require("crypto")
-require("../events/folder.subscriber")()
+
+
 
 
 exports.uploadFile = async (req, res) => {

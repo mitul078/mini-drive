@@ -16,6 +16,6 @@ const apiLimit = rateLimit({
 app.use(apiLimit)
 
 
-app.use("/api/v1/auth" , require("./modules/auth/auth.route"))
+app.use("/api/v1/auth" , require("./modules/auth.route"))
 
 module.exports = app

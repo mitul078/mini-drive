@@ -8,7 +8,7 @@ const folderSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-// Compound unique index: folderName + userId (allows same folderName for different users)
+
 folderSchema.index({ folderName: 1, userId: 1 }, { unique: true })
 
 module.exports = mongoose.model("Folder" , folderSchema)
