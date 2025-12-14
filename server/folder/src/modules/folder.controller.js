@@ -55,7 +55,8 @@ exports.checkFolderId = async (req, res) => {
 
         await publishToQueue("FOLDER_VERIFIED:FILE_SERVICE", {
             folderId: folder._id,
-            userId: folder.userId
+            userId: folder.userId,
+            path: folder.path
         })
 
         res.status(200).json({ msg: "Folder found", folder })

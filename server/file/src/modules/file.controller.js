@@ -1,8 +1,6 @@
 const File = require("./file.model")
 const imagekit = require("../config/imagekit")
-
-
-
+const redisClient = require("../config/redis")
 
 exports.uploadFile = async (req, res) => {
     try {

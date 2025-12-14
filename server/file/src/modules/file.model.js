@@ -10,7 +10,7 @@ const fileSchema = new mongoose.Schema({
     userId: { type: String },
     url: { type: String, required: true },
     folderPath: { type: String, required: true },
-    token: {type:String , unique: true},
+    
     
 }, { timestamps: true })
 
